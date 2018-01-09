@@ -1,5 +1,5 @@
 //Author: Christina Hammer
-//Last Edit: 1/06/2018
+//Last Edit: 1/08/2018
 //Status: In the middle of writing functionality for the MedianSet class
 
 /*
@@ -30,12 +30,14 @@ class BinaryHeap{
     }
     virtual ~BinaryHeap() {delete [] theHeap;}
     
+    //ACCESSORS
     int checkTop() const {
         if (size < 1) return -1;
         return theheap[0];
     }
     int size() const {return size;}
     
+    //MODIFERS
     void insert(int const val) {_insert(val)};
     int extractTop() {return _extractTop();}
     
@@ -137,25 +139,71 @@ class MaxHeap : public BinaryHeap {
 class MedianSet {
     public:
     MedianSet(int _set_size) {
-        median = INT_MIN; //default value indicating an empty MedianSet
+        
         num_elements = 0;
         smaller = new MaxHeap(_set_size);
         larger = new MinHeap(_set_size);
     }
-    
+   ~MedianSet() {
+       delete smaller;
+       delete larger;
+   }
+    //ACCESSORS
     int getMedian() {
-        if (isEmpty()) { cerr<<"ERROR: MedianSet is empty\n"; }//
-        return median;
+        if (num_elements == 0) { 
+            cerr<<"ERROR: MedianSet is empty\n"; 
+            return MIN_INT;
+        }
+        return _calc_median();
     }
     
-    bool isEmpty() {return num_elements==0;}
-    void add
+    bool isEmpty() {return num_elements==0;} //indicates whether the MedianSet is empty
+    
+    //MODIFIERS
+    void add(int const value) {_add(value);} //adds value to the MedianSet
+    void pop() {_pop();} //removes median value and replaces it with the new median value
     
     private:
-    int median;
+    
     int num_elements;
-    MaxHeap smaller; //numbers smaller than the median are stored in this MaxHeap
-    MinHeap larger; //numbers larger than the median are stored in this MinHeap
+    MaxHeap* smaller; //numbers smaller than the median are stored in this MaxHeap
+    MinHeap* larger; //numbers larger than the median are stored in this MinHeap
+    
+    void _add(int const value) {
+        if (num_elements == 0) {
+            num_elements++;
+            median = value;
+        }
+        if (value >= smaller->checkTop() && value <= larger->checkTop()) {
+            if (smaller->size() > larger->size()) larger->insert(value);
+            else{
+                smaller->insert(value);
+            }
+        }
+        else if (value < smaller->checkTop()) {
+            larger->insert(smaller.extractTop());
+            smaller->insert(value);
+        }
+        else {
+            smaller->insert(larger->extractTop());
+            larger->insert(value);
+        }
+        num_elements++;
+        return;
+    }
+    
+    int _calcMedian(){
+        if (smaller->size() > larger->size()) return smaller->checkTop();
+        if (larger->size() > smaller->size()) return larger->checkTop();
+        return (smaller->checkTop() + larger->checkTop())/2;
+    }
+    
+    void _pop() {
+        if (num_elements < 1) return;
+        num_elements--;
+        if (num_elements == 1) {return;}
+        //
+    }
     
     
 };
