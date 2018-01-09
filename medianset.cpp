@@ -1,5 +1,5 @@
 //Author: Christina Hammer
-//Last Edit: 1/08/2018
+//Last Edit: 1/06/2018
 //Status: In the middle of writing functionality for the MedianSet class
 
 /*
@@ -19,40 +19,40 @@ This solution will be able to generalizes beyond the problem in that:
 #include <numeric>
 #include <sstream>
 #include <iostream>
-
+#include <cstring>
 
 using namespace std;
 
 class BinaryHeap{
     public:
-    BinaryHeap(int _capacity): size(0), capacity(_capacity) {
+    BinaryHeap(int _capacity): heapsize(0), capacity(_capacity) {
         theheap = new int[capacity];
     }
-    virtual ~BinaryHeap() {delete [] theHeap;}
+    virtual ~BinaryHeap() {delete [] theheap;}
     
     //ACCESSORS
     int checkTop() const {
-        if (size < 1) return -1;
+        if (heapsize < 1) return -1;
         return theheap[0];
     }
-    int size() const {return size;}
+    int size() const {return heapsize;}
     
     //MODIFERS
-    void insert(int const val) {_insert(val)};
+    void insert(int const val) {_insert(val);}
     int extractTop() {return _extractTop();}
     
     protected:
     int* theheap;
     int capacity;
-    int size;
+    int heapsize;
     int invalid;
     
     virtual bool swapUpCheck(int i);
-    virtual bool swapDownCheck(int i, int check);
+    virtual int swapDownCheck(int i, int check);
     
     void doubleCapacity() {        
         int* doubletheheap = new int[capacity*2];
-        memcpy(doubletheheap, theheap, size*sizeof(int));
+        memcpy(doubletheheap, theheap, heapsize*sizeof(int));
         capacity = capacity*2;
         delete [] theheap;
         theheap = doubletheheap;        
@@ -65,27 +65,27 @@ class BinaryHeap{
     }
     
     void bubbleDown(int i) {              
-         int swap_with = swapDownCheck(i, left(i)));
+         int swap_with = swapDownCheck(i, left(i));
          swap_with = swapDownCheck(swap_with, right(i));
          if (swap(i, swap_with)) bubbleDown(swap_with);
     }
     
     //add value to heap
     void _insert(int const val) {
-        if (capacity == size) {doubleCapacity();}       
+        if (capacity == heapsize) {doubleCapacity();}       
         //put new value in next available space
-        theheap[size] = val;
-        size++;
-        if (size > 2) bubbleUp(size-1);      
+        theheap[heapsize] = val;
+        heapsize++;
+        if (heapsize > 2) bubbleUp(heapsize-1);      
     }
     
     //return top value and remove from heap
-    int extractTop() {
-        if (size < 1) return -1;        
+    int _extractTop() {
+        if (heapsize < 1) return -1;        
         int old_top = theheap[0];
-        theheap[0] = theheap[size-1];
-        size--;
-        if (size > 2) bubbleDown(0);
+        theheap[0] = theheap[heapsize-1];
+        heapsize--;
+        if (heapsize > 2) bubbleDown(0);
         return old_top;
     }
     
@@ -95,8 +95,8 @@ class BinaryHeap{
     
     bool swap(int i, int j) {
         if (i == j) return false;
-        if (i < 0 || i >= size) return false;
-        if (j < 0 || j >= size) return false;
+        if (i < 0 || i >= heapsize) return false;
+        if (j < 0 || j >= heapsize) return false;
         int temp = theheap[i];
         theheap[i] = theheap[j];
         theheap[j] = temp;
@@ -108,6 +108,7 @@ class BinaryHeap{
 
 class MinHeap : public BinaryHeap {
     public:
+        MinHeap(int set_size):BinaryHeap(set_size){}
         ~MinHeap() { delete [] theheap; }
     private:
     
@@ -117,7 +118,7 @@ class MinHeap : public BinaryHeap {
     }
     
     int swapDownCheck(int i, int check) {
-        if (check > size || theheap[i] < theheap[check]) return i;
+        if (check > heapsize || theheap[i] < theheap[check]) return i;
         return check;
     }
     
@@ -125,12 +126,13 @@ class MinHeap : public BinaryHeap {
 
 class MaxHeap : public BinaryHeap {
     public:
+        MaxHeap(int set_size):BinaryHeap(set_size){}
         ~MaxHeap() { delete [] theheap; }
     private:   
     
     bool swapUpCheck(int i) {return theheap[i] > theheap[parent(i)];}
     int swapDownCheck(int i, int check) {
-        if (check > size || theheap[i] > theheap[check]) return i;
+        if (check > heapsize || theheap[i] > theheap[check]) return i;
         return check;
     }
     
@@ -152,9 +154,9 @@ class MedianSet {
     int getMedian() {
         if (num_elements == 0) { 
             cerr<<"ERROR: MedianSet is empty\n"; 
-            return MIN_INT;
+            return INT_MIN;
         }
-        return _calc_median();
+        return _calcMedian();
     }
     
     bool isEmpty() {return num_elements==0;} //indicates whether the MedianSet is empty
@@ -172,7 +174,7 @@ class MedianSet {
     void _add(int const value) {
         if (num_elements == 0) {
             num_elements++;
-            median = value;
+            smaller->insert(value);
         }
         if (value >= smaller->checkTop() && value <= larger->checkTop()) {
             if (smaller->size() > larger->size()) larger->insert(value);
@@ -181,7 +183,7 @@ class MedianSet {
             }
         }
         else if (value < smaller->checkTop()) {
-            larger->insert(smaller.extractTop());
+            larger->insert(smaller->extractTop());
             smaller->insert(value);
         }
         else {
@@ -218,7 +220,7 @@ int main(){
     for(int i = 0; i < n; i++){
        cin>>a;
        med->add(a);
-       med.getMedian();
+       med->getMedian();
     }
 
     delete med;
