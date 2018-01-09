@@ -1,5 +1,6 @@
 //Author: Christina Hammer
 //Last Edit: 1/08/2018
+//Status: Runtime and Memory debugging in progress
 
 /*
 Created to solve this HackerRank exercise: https://www.hackerrank.com/challenges/ctci-find-the-running-median/problem
