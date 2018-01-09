@@ -8,7 +8,6 @@ Created to solve this HackerRank exercise: https://www.hackerrank.com/challenges
 This solution will be able to generalizes beyond the problem in that:
 -MedianSet will dynamically resize to continue functiong normally if given more elements than the initially specified number
 -MedianSet will handle negative values in addition to positive values
--MedianSet will support a 'pop()' function to remove and replace the current Median element if possible
 */
 
 #include <cstdio>
@@ -47,8 +46,8 @@ class BinaryHeap{
     int heapsize;
     int invalid;
     
-    virtual bool swapUpCheck(int i);
-    virtual int swapDownCheck(int i, int check);
+    virtual bool swapUpCheck(int i) = 0;
+    virtual int swapDownCheck(int i, int check) = 0;
     
     void doubleCapacity() {        
         int* doubletheheap = new int[capacity*2];
@@ -163,7 +162,6 @@ class MedianSet {
     
     //MODIFIERS
     void add(int const value) {_add(value);} //adds value to the MedianSet
-    void pop() {_pop();} //removes median value and replaces it with the new median value
     
     private:
     
@@ -200,13 +198,6 @@ class MedianSet {
         return (smaller->checkTop() + larger->checkTop())/2;
     }
     
-    void _pop() {
-        if (num_elements < 1) return;
-        num_elements--;
-        if (num_elements == 1) {return;}
-        //
-    }
-    
     
 };
 
@@ -220,7 +211,7 @@ int main(){
     for(int i = 0; i < n; i++){
        cin>>a;
        med->add(a);
-       med->getMedian();
+       cout<<med->getMedian()<<endl;
     }
 
     delete med;
