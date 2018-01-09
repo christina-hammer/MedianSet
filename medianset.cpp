@@ -1,6 +1,5 @@
 //Author: Christina Hammer
-//Last Edit: 1/06/2018
-//Status: In the middle of writing functionality for the MedianSet class
+//Last Edit: 1/08/2018
 
 /*
 Created to solve this HackerRank exercise: https://www.hackerrank.com/challenges/ctci-find-the-running-median/problem
