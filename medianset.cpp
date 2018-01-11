@@ -1,6 +1,6 @@
 //Author: Christina Hammer
-//Last Edit: 1/08/2018
-//Status: Runtime and Memory debugging in progress
+//Last Edit: 1/11/2018
+//Status: In the middle of debugging runtime and memory errors
 
 /*
 Created to solve this HackerRank exercise: https://www.hackerrank.com/challenges/ctci-find-the-running-median/problem
@@ -8,6 +8,7 @@ Created to solve this HackerRank exercise: https://www.hackerrank.com/challenges
 This solution will be able to generalizes beyond the problem in that:
 -MedianSet will dynamically resize to continue functiong normally if given more elements than the initially specified number
 -MedianSet will handle negative values in addition to positive values
+
 */
 
 #include <cstdio>
@@ -19,6 +20,7 @@ This solution will be able to generalizes beyond the problem in that:
 #include <sstream>
 #include <iostream>
 #include <cstring>
+#include <iomanip>
 
 using namespace std;
 
@@ -150,7 +152,7 @@ class MedianSet {
        delete larger;
    }
     //ACCESSORS
-    int getMedian() {
+    float getMedian() {
         if (num_elements == 0) { 
             cerr<<"ERROR: MedianSet is empty\n"; 
             return INT_MIN;
@@ -192,12 +194,11 @@ class MedianSet {
         return;
     }
     
-    int _calcMedian(){
+    float _calcMedian(){
         if (smaller->size() > larger->size()) return smaller->checkTop();
         if (larger->size() > smaller->size()) return larger->checkTop();
-        return (smaller->checkTop() + larger->checkTop())/2;
+        return (smaller->checkTop() + larger->checkTop())/2.0;
     }
-    
     
 };
 
@@ -211,7 +212,7 @@ int main(){
     for(int i = 0; i < n; i++){
        cin>>a;
        med->add(a);
-       cout<<med->getMedian()<<endl;
+       cout<<fixed<<setprecision(1)<<med->getMedian()<<endl;
     }
 
     delete med;
