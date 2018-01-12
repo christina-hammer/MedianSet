@@ -44,8 +44,8 @@ class BinaryHeap{
     
     protected:
     int* theheap;
-    int capacity;
     int heapsize;
+    int capacity;    
     int invalid;
     
     virtual bool swapUpCheck(int i) = 0;
@@ -147,10 +147,7 @@ class MedianSet {
         smaller = new MaxHeap(_set_size);
         larger = new MinHeap(_set_size);
     }
-   ~MedianSet() {
-       delete smaller;
-       delete larger;
-   }
+   ~MedianSet() {}
     //ACCESSORS
     float getMedian() {
         if (num_elements == 0) { 
@@ -209,12 +206,12 @@ int main(){
     
     MedianSet* med = new MedianSet(n);
 
-    for(int i = 0; i < n; i++){
-       cin>>a;
-       med->add(a);
-       cout<<fixed<<setprecision(1)<<med->getMedian()<<endl;
+    for(int i = 0; i < n; i++){       
+       cin>>a;       
+       med->add(a);       
+       cout<<fixed<<setprecision(1)<<med->getMedian()<<endl;       
     }
-
+   
     delete med;
     return 0;
 }
