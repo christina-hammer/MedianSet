@@ -86,7 +86,7 @@ class BinaryHeap{
         //put new value in next available space
         theheap[heapsize] = val;
         heapsize++;
-        if (heapsize > 2) bubbleUp(heapsize-1);      
+        if (heapsize > 1) bubbleUp(heapsize-1);      
     }
     
     //return top value and remove from heap
@@ -95,7 +95,7 @@ class BinaryHeap{
         int old_top = theheap[0];
         theheap[0] = theheap[heapsize-1];
         heapsize--;
-        if (heapsize > 2) bubbleDown(0);
+        if (heapsize >= 2) bubbleDown(0);
         return old_top;
     }
     
@@ -140,7 +140,10 @@ class MaxHeap : public BinaryHeap {
         ~MaxHeap() { delete [] theheap; }
     private:   
     
-    bool swapUpCheck(int i) {return theheap[i] > theheap[parent(i)];}
+    bool swapUpCheck(int i) {
+        if (i == 0) return false;
+        return theheap[i] > theheap[parent(i)];
+    }
     int swapDownCheck(int i, int check) {
         if (check > heapsize || theheap[i] > theheap[check]) return i;
         return check;
@@ -178,7 +181,7 @@ class MedianSet {
     MinHeap* larger; //numbers larger than the median are stored in this MinHeap
     
     void _add(int const value) {
-        cout<<"adding value: "<<value<<endl;
+        
         if (num_elements == 0) { //both heaps are empty            
             smaller->insert(value);
         }
@@ -223,13 +226,13 @@ class MedianSet {
     }
     
     float _calcMedian(){
-        cout<<"smaller size = "<<smaller->size()<<endl;
-        cout<<"smaller contents = ";
-        smaller->printHeap();
+        //cout<<"smaller size = "<<smaller->size()<<endl;
+        //cout<<"smaller contents = ";
+        //smaller->printHeap();
 
-        cout<<"larger size = "<<larger->size()<<endl;
-        cout<<"larger contents = ";
-        larger->printHeap();
+        //cout<<"larger size = "<<larger->size()<<endl;
+        //cout<<"larger contents = ";
+        //larger->printHeap();
 
 
         if (smaller->size() > larger->size()) return smaller->checkTop();
