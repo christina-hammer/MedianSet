@@ -1,6 +1,6 @@
 //Author: Christina Hammer
 //Last Edit: 1/15/2018
-//Status: In the middle of debugging runtime (logic) errors
+//Status: determining inconsistencies occurring for large test cases
 
 /*
 Created to solve this HackerRank exercise: https://www.hackerrank.com/challenges/ctci-find-the-running-median/problem
@@ -21,6 +21,7 @@ This solution will be able to generalizes beyond the problem in that:
 #include <iostream>
 #include <cstring>
 #include <iomanip>
+#include <fstream>
 
 using namespace std;
 
@@ -244,17 +245,26 @@ class MedianSet {
 
 
 int main(){
+
+    ofstream outfile;
+    outfile.open("test1000results.txt");
+
+    ifstream infile;
+    infile.open("test1000.txt");
+
     int n, a;
-    cin >> n;
+    infile >> n;
     
     MedianSet* med = new MedianSet(n);
 
-    for(int i = 0; i < n; i++){       
-       cin>>a;       
+    while(infile>>a){       
+       //infile>>a;       
        med->add(a);       
-       cout<<fixed<<setprecision(1)<<med->getMedian()<<endl;       
+       outfile<<fixed<<setprecision(1)<<med->getMedian()<<endl;       
     }
    
     delete med;
+    infile.close();
+    outfile.close();
     return 0;
 }
