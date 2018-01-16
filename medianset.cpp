@@ -1,6 +1,6 @@
 //Author: Christina Hammer
-//Last Edit: 1/11/2018
-//Status: In the middle of debugging runtime and memory errors
+//Last Edit: 1/15/2018
+//Status: In the middle of debugging runtime (logic) errors
 
 /*
 Created to solve this HackerRank exercise: https://www.hackerrank.com/challenges/ctci-find-the-running-median/problem
@@ -36,7 +36,16 @@ class BinaryHeap{
         if (heapsize < 1) return -1;
         return theheap[0];
     }
+
     int size() const {return heapsize;}
+
+    void printHeap() { //for debugging
+
+        for(int i = 0; i  < heapsize; i++) {
+            cout<<theheap[i]<<" ";
+        }
+        cout<<endl;
+    }
     
     //MODIFERS
     void insert(int const val) {_insert(val);}
@@ -169,22 +178,44 @@ class MedianSet {
     MinHeap* larger; //numbers larger than the median are stored in this MinHeap
     
     void _add(int const value) {
-        if (num_elements == 0) {
-            num_elements++;
+        cout<<"adding value: "<<value<<endl;
+        if (num_elements == 0) { //both heaps are empty            
             smaller->insert(value);
         }
-        if (value >= smaller->checkTop() && value <= larger->checkTop()) {
-            if (smaller->size() > larger->size()) larger->insert(value);
+        else if (smaller->size() == 0) { //smaller is empty
+            if (larger->checkTop() >= value) {
+                smaller->insert(value);
+            }
+            else {
+                smaller->insert(larger->extractTop());
+                larger->insert(value);
+            }        
+        }
+        else if (larger->size() == 0) { //larger is empty
+            if (smaller->checkTop() <= value) {
+                larger->insert(value);
+            }
+            else {
+                larger->insert(smaller->extractTop());
+                smaller->insert(value);
+            }
+        }
+        else if (value >= smaller->checkTop() && value <= larger->checkTop()) {
+            if (smaller->size() > larger->size()) {larger->insert(value);}
             else{
                 smaller->insert(value);
             }
         }
         else if (value < smaller->checkTop()) {
-            larger->insert(smaller->extractTop());
+            if (smaller->size() > larger->size()) {
+                larger->insert(smaller->extractTop());
+            }
             smaller->insert(value);
         }
         else {
-            smaller->insert(larger->extractTop());
+            if (larger->size() > smaller->size()) {
+                smaller->insert(larger->extractTop());
+            }
             larger->insert(value);
         }
         num_elements++;
@@ -192,6 +223,15 @@ class MedianSet {
     }
     
     float _calcMedian(){
+        cout<<"smaller size = "<<smaller->size()<<endl;
+        cout<<"smaller contents = ";
+        smaller->printHeap();
+
+        cout<<"larger size = "<<larger->size()<<endl;
+        cout<<"larger contents = ";
+        larger->printHeap();
+
+
         if (smaller->size() > larger->size()) return smaller->checkTop();
         if (larger->size() > smaller->size()) return larger->checkTop();
         return (smaller->checkTop() + larger->checkTop())/2.0;
